@@ -33,6 +33,7 @@ public class ServerMain {
                         new HttpServerCodec(),
                         new HttpObjectAggregator(65535),
                         new WebSocketServerProtocolHandler("/webSocket"),
+                        new GameMsgDecoder(), // 自定义的消息解码器
                         new GameMsgHandle()
                 );
             }

@@ -34,6 +34,7 @@ public class ServerMain {
                         new HttpObjectAggregator(65535),
                         new WebSocketServerProtocolHandler("/webSocket"),
                         new GameMsgDecoder(), // 自定义的消息解码器
+                        new GameMsgEncoder(),//自定义消息编码器
                         new GameMsgHandle()
                 );
             }

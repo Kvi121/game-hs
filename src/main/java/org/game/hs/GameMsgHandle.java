@@ -7,6 +7,7 @@ import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import protobuf.GameMsgProtocol;
 
 /**
  * Function:
@@ -36,7 +37,13 @@ public class GameMsgHandle extends SimpleChannelInboundHandler<Object> {
         LOGGER.info("hello get msg:" + msg.getClass().getName());
         //业务逻辑处理
         if(msg instanceof GameMsgProtocol.UserEntryCmd){
-            GameMsgProtocol.UserEntryResult.Builder resultBuilder = GameMsgProtocol.
+            GameMsgProtocol.UserEntryResult.Builder resultBuilder = GameMsgProtocol.UserEntryResult.newBuilder();
+            resultBuilder.setUserId(((GameMsgProtocol.UserEntryCmd) msg).getUserId());
+            resultBuilder.setHeroAvatar(((GameMsgProtocol.UserEntryCmd) msg).getHeroAvatar());
+
+            //群发
+            GameMsgProtocol.UserEntryResult build = resultBuilder.build();
+            channelGroup.writeAndFlush(build);
         }
     }
 }

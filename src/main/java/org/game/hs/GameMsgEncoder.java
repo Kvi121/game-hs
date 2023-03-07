@@ -14,7 +14,7 @@ import protobuf.GameMsgProtocol;
 import java.nio.ByteBuffer;
 
 /**
- * Function:
+ * Function: 消息编码器 - netty out
  *
  * @author ZhangWY
  * @date: 2023/3/7

@@ -8,7 +8,7 @@ import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import protobuf.GameMsgProtocol;
 
 /**
- * Function:
+ * Function: 消息解码器 - netty in
  *
  * @author Zhang
  * @date: 2023/3/6

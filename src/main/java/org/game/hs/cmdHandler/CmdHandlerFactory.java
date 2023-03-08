@@ -3,6 +3,7 @@ package org.game.hs.cmdHandler;
 import com.google.protobuf.GeneratedMessageV3;
 import protobuf.GameMsgProtocol;
 
+import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,13 +22,11 @@ public final class CmdHandlerFactory {
 
     }
 
-    private static void init(){
+    public static void init(){
         handlerMap.put(GameMsgProtocol.UserEntryCmd.class, new UserEntryCmdHandler());
     }
 
-
     public static ICmdHandler<? extends GeneratedMessageV3> create(Class<?> msg){
-
-        return null;
+        return handlerMap.get(msg);
     }
 }

@@ -1,15 +1,17 @@
 package org.game.hs;
 
+import com.google.protobuf.GeneratedMessageV3;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.AttributeKey;
-import org.game.hs.msg.User;
+import org.game.hs.cmdHandler.CmdHandlerFactory;
+import org.game.hs.cmdHandler.ICmdHandler;
+import org.game.hs.cmdHandler.UserEntryCmdHandler;
+import org.game.hs.model.UserManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import protobuf.GameMsgProtocol;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -21,13 +23,10 @@ import java.util.Objects;
  */
 
 public class GameMsgHandle extends SimpleChannelInboundHandler<Object> {
-
     /**
      * 日志对象
      */
     static private final Logger LOGGER = LoggerFactory.getLogger(GameMsgHandle.class);
-
-    static private Map<Integer, User> userMap = new HashMap<>();
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception{
@@ -45,7 +44,7 @@ public class GameMsgHandle extends SimpleChannelInboundHandler<Object> {
         if(Objects.isNull(userId)){
             return;
         }
-        userMap.remove(userId);
+        UserManager.remove(userId);
         GameMsgProtocol.UserQuitResult.Builder resultBuilder = GameMsgProtocol.UserQuitResult.newBuilder();
         resultBuilder.setQuitUserId(userId);
         GameMsgProtocol.UserQuitResult quitResult = resultBuilder.build();
@@ -55,22 +54,20 @@ public class GameMsgHandle extends SimpleChannelInboundHandler<Object> {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
         LOGGER.info("hello get msg:" + msg.getClass().getName());
+
+        ICmdHandler<? extends GeneratedMessageV3> cmdHandler = CmdHandlerFactory.create(msg);
         //业务逻辑处理
-        if(msg instanceof GameMsgProtocol.UserEntryCmd){
 
-            GameMsgProtocol.UserEntryCmd userEntryCmd = (GameMsgProtocol.UserEntryCmd) msg;
+        if(cmdHandler != null){
+            cmdHandler.handler(ctx,cast(msg));
+        }
+    }
 
-            GameMsgProtocol.UserEntryResult.Builder resultBuilder = GameMsgProtocol.UserEntryResult.newBuilder();
-            resultBuilder.setUserId(userEntryCmd.getUserId());
-            resultBuilder.setHeroAvatar(userEntryCmd.getHeroAvatar());
-
-            Integer userId = userEntryCmd.getUserId();
-            ctx.channel().attr(AttributeKey.valueOf("userId")).set(userId);
-
-            userMap.put(userId,new User(userId,userEntryCmd.getHeroAvatar()));
-            //群发
-            GameMsgProtocol.UserEntryResult build = resultBuilder.build();
-            Broadcaster.broadcaster(build);
+    private static <Cmd extends GeneratedMessageV3> Cmd cast(Object msg){
+        if (null == msg || !(msg instanceof GeneratedMessageV3)) {
+            return null;
+        } else {
+            return (Cmd) msg;
         }
     }
 }

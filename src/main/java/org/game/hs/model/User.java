@@ -1,4 +1,4 @@
-package org.game.hs.msg;
+package org.game.hs.model;
 
 import lombok.Data;
 

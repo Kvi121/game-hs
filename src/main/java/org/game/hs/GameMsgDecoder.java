@@ -5,6 +5,8 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import protobuf.GameMsgProtocol;
 
 /**
@@ -15,8 +17,14 @@ import protobuf.GameMsgProtocol;
  * @since JDK 1.8
  */
 public class GameMsgDecoder extends ChannelInboundHandlerAdapter {
+
+    static private final Logger LOGGER = LoggerFactory.getLogger(GameMsgDecoder.class);
+
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        LOGGER.info("msg:{}",msg.toString());
+
         if(!(msg instanceof BinaryWebSocketFrame)){
             return;
         }

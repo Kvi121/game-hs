@@ -38,6 +38,10 @@ public class GameMsgEncoder extends ChannelOutboundHandlerAdapter {
             msgCode = GameMsgProtocol.MsgCode.USER_ENTRY_RESULT_VALUE;
             LOGGER.info("GameMsgEncoder : UserEntryResult");
         }
+        if(msg instanceof  GameMsgProtocol.UserQuitResult){
+            msgCode = GameMsgProtocol.MsgCode.USER_QUIT_RESULT_VALUE;
+            LOGGER.info("GameMsgEncoder : UserQuitResult");
+        }
 
         byte[] byteArray = ((GeneratedMessageV3) msg).toByteArray();
         ByteBuf byteBuffer = ctx.alloc().buffer();

@@ -40,7 +40,7 @@ public class ServerMain {
             }
         });
         try {
-            ChannelFuture channelFuture = bootstrap.bind(64430).sync();
+            ChannelFuture channelFuture = bootstrap.bind(12345).sync();
             if(channelFuture.isSuccess()){
                 System.out.println("server run success");
             }
